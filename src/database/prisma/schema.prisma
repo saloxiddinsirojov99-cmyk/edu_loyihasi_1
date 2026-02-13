@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique     
+  username   String?   @unique     
+  password   String                   
+  phone      String?                  
+  address    String?
+  birthDate  DateTime?
+
+  role       Role      @default(ADMIN)          
+  status     UserStatus @default(ACTIVE)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt       
+
+  taughtGroups Group[]   @relation("GroupTeacher")
+
+  @@map("users")
+}
+
+model Student {
+  id             Int       @id @default(autoincrement())
+  password       String?                    
+  phone          String?
+  address        String?
+  birthDate      DateTime?
+  status         StudentStatus @default(ACTIVE)
+  enrollmentDate DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  studentGroups  StudentGroup[]
+
+  @@map("students")
+}
+
+model Course {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  price       Int
+  duration    Int      
+  level       Level?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  groups      Group[]
+
+  @@map("courses")
+}
+
+model Group {
+  id           Int       @id @default(autoincrement())
+  name         String             
+  courseId     Int
+  teacherId    Int?           
+  schedule     String?     
+  maxStudents  Int       @default(20)
+  status       GroupStatus @default(PLANNED)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  course       Course    @relation(fields: [courseId], references: [id] )
+  teacher      User?     @relation("GroupTeacher", fields: [teacherId], references: [id] )
+
+  studentGroups StudentGroup[]
+  lessons      Lesson[]
+
+  @@map("groups")
+}
+
+model Lesson {
+  id          Int       @id @default(autoincrement())
+  groupId     Int
+  createdBy   Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  group       Group     @relation(fields: [groupId], references: [id] )
+
+  @@map("lessons")
+}
+
+model StudentGroup {
+  id        Int       @id @default(autoincrement())
+  studentId Int
+  groupId   Int           
+  status    StudentGroupStatus @default(ACTIVE)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  student   Student   @relation(fields: [studentId], references: [id] )
+  group     Group     @relation(fields: [groupId], references: [id] )
+
+  @@unique([studentId, groupId])
+  @@map("student_groups")
+}
+
+enum Role {
+  SUPERADMIN    
+  ADMIN          
+  TEACHER  
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED        
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE 
+  ADVANCED
+}
+
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  FRIZE          
+  GRADUATED
+}
+
+enum TeacherStatus {
+  ACTIVE
+  INACTIVE
+  ON_LEAVE
+  FIRED
+}
+
+enum StudentGroupStatus {
+  ACTIVE
+  INACTIVE
+  COMPLETED
+  DROPPED
+}
+
+enum GroupStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
