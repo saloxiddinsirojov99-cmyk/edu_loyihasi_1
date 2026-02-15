@@ -9,13 +9,8 @@ export class LoginDto {
   @IsEmail({}, { message: 'Email formati notogri' })
   @IsNotEmpty({ message: 'Email majburiy' })
   email: string;
-
-  @ApiProperty({
-    example: 'superadmin2026',
-    description: 'Foydalanuvchi paroli',
-  })
   @IsString()
   @IsNotEmpty({ message: 'Parol majburiy' })
-  @MinLength(6, { message: 'Parol kamida 6 ta belgidan iborat bo‘lishi kerak' })
+  @MinLength(6, { message: 'Parol kamida 6 ta belgidan iborat bolishi kerak' })
   password: string;
 }
