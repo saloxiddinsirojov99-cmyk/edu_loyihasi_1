@@ -1,15 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UserDto {
-  @ApiProperty({ example: 1, description: 'Foydalanuvchi ID si' })
+  @ApiProperty({ example: 1 })
   id: number;
 
-  @ApiProperty({ example: 'superadmin@tashkent.edu', description: 'Email' })
+  @ApiProperty({ example: 'user@example.com' })
   email: string;
 
-  @ApiProperty({ example: 'Super Admin', description: 'Ism familiya yoki username', required: false })
-  name?: string;
-
-  @ApiProperty({ example: 'admin', description: 'Rol (admin, teacher, student va h.k.)', required: false })
-  role?: string;
+  @ApiProperty({ example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' })
+  token: string;
 }

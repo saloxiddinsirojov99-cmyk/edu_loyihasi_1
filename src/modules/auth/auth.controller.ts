@@ -25,8 +25,7 @@ export class AuthController {
     return {
       id: user.id,
       email: user.email,
-      name: user.name || user.email.split('@')[0], 
-      role: user.role,
+      token:access_token
     };
   }
 }
